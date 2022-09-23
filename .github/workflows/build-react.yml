@@ -1,0 +1,33 @@
+# Workflow for build react projects
+name: Build React project
+
+on:
+  # Runs on pushes targeting the default branch
+  push:
+    branches: ["main"]
+  pull_request:
+    branches: ["main"]
+    
+jobs:
+  # Job to Build React project
+  build:
+    
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+      - name: Setup Node.js environment
+        uses: actions/setup-node@v3.4.1
+        with:
+          node-version: 16.x
+      - name: Install Dependencies
+        run: npm install
+      - name : build  
+        run: npm run build
+      - name: Upload artifact (build content)
+        uses: actions/upload-artifact@v3
+        with:
+          name: build-content
+          path: ./build
+      
