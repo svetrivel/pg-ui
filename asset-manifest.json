@@ -1,0 +1,15 @@
+{
+  "files": {
+    "main.css": "/pg-ui/static/css/main.e6c13ad2.css",
+    "main.js": "/pg-ui/static/js/main.62ac0a76.js",
+    "static/js/787.227d2413.chunk.js": "/pg-ui/static/js/787.227d2413.chunk.js",
+    "index.html": "/pg-ui/index.html",
+    "main.e6c13ad2.css.map": "/pg-ui/static/css/main.e6c13ad2.css.map",
+    "main.62ac0a76.js.map": "/pg-ui/static/js/main.62ac0a76.js.map",
+    "787.227d2413.chunk.js.map": "/pg-ui/static/js/787.227d2413.chunk.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.e6c13ad2.css",
+    "static/js/main.62ac0a76.js"
+  ]
+}
