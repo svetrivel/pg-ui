@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { useFormik } from "formik";
 import * as yup from "yup";
 import Button from "@mui/material/Button";
@@ -6,9 +6,11 @@ import TextField from "@mui/material/TextField";
 import IconButton from "@mui/material/IconButton";
 import Fingerprint from "@mui/icons-material/Fingerprint";
 import Box from "@mui/material/Box";
-import { height } from "@mui/system";
 import axios from "axios";
 import { Typography } from "@mui/material";
+import AppSettings from "../../AppSettings";
+import { Instagram } from "@mui/icons-material";
+import { Stack } from "@mui/system";
 
 const validationSchema = yup.object({
   email: yup
@@ -21,16 +23,20 @@ const validationSchema = yup.object({
     .required("Password is required"),
 });
 
-const baseURL = "http://localhost:5074/api/User/Login";
-
 const Login = (prop) => {
+  const [loginMessage, setLoginMessage] = useState({ type: "", message: "" });
+
   const loginUser = (loginData) => {
     axios
-      .post(baseURL, {
-        userName: loginData.email,
+      .post(AppSettings.BackendHostURL + "api/User/Login", {
+        email: loginData.email,
         password: loginData.password,
       })
-      .then((res) => console.log(res.data));
+      .then((res) => setLoginMessage({ type: "Success", message: res.data }))
+      .catch((error) => {
+        //console.log(error);
+        setLoginMessage({ type: "Error", message: error.response.data.error });
+      });
   };
   const formik = useFormik({
     initialValues: {
@@ -40,8 +46,6 @@ const Login = (prop) => {
     validationSchema: validationSchema,
     onSubmit: (values) => {
       loginUser(values);
-      if (prop.onSubmit) alert("No external submit ofund");
-      else prop.onSubmit(values);
     },
   });
 
@@ -49,20 +53,32 @@ const Login = (prop) => {
     <Box
       sx={{
         "& .MuiTextField-root": { m: 1 },
-        display: "flex",
-        flexWrap: "wrap",
-        justifyContent: "space-around",
-        paddingTop: "40px",
+        width: "350px",
+        backgroundColor: "#fff",
+        padding: "10px 40px",
+        borderRadius: "10px",
       }}
       autoComplete="off"
     >
       <form
         onSubmit={formik.handleSubmit}
         style={{
-          width: "500px",
           textAlign: "center",
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
         }}
       >
+        <Stack
+          direction="row"
+          alignItems="center"
+          justifyContent="center"
+          spacing={1}
+          style={{ margin: "12px 0 12px 0" }}
+        >
+          <Instagram color="primary" style={{ fontSize: "50px" }} />
+          <Typography>Instagram</Typography>
+        </Stack>
         <TextField
           fullWidth
           id="email"
@@ -73,7 +89,6 @@ const Login = (prop) => {
           error={formik.touched.email && Boolean(formik.errors.email)}
           helperText={formik.touched.email && formik.errors.email}
         />
-        <Typography align="center">OR</Typography>
         <TextField
           fullWidth
           id="password"
@@ -85,11 +100,21 @@ const Login = (prop) => {
           error={formik.touched.password && Boolean(formik.errors.password)}
           helperText={formik.touched.password && formik.errors.password}
         />
-        <Button color="success" variant="contained" type="submit">
+        <Button
+          color="success"
+          variant="contained"
+          type="submit"
+          style={{ marginTop: "10px" }}
+        >
           <Fingerprint />
           Login
         </Button>
       </form>
+      {loginMessage.message.length > 0 && (
+        <Typography color={loginMessage.type === "Error" ? "red" : "green"}>
+          {loginMessage.message}
+        </Typography>
+      )}
     </Box>
   );
 };

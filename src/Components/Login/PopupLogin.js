@@ -42,7 +42,6 @@ export default function PopupLogin(prop) {
       </LoginButton>
 
       <Dialog open={open} onClose={handleClose}>
-        <DialogTitle>Login</DialogTitle>
         <DialogContent>
           <Login onSubmit={submitHandler} />
         </DialogContent>

@@ -11,6 +11,7 @@ import FormHelperText from "@mui/material/FormHelperText";
 import FormControl from "@mui/material/FormControl";
 import InputLabel from "@mui/material/InputLabel";
 import MenuItem from "@mui/material/MenuItem";
+import AppSettings from "../../AppSettings";
 
 const validationSchema = yup.object({
   name: yup.string("Enter country name").required("Name is required"),
@@ -20,14 +21,14 @@ const validationSchema = yup.object({
     .required("Short Name is required"),
 });
 
-const baseURL = "http://localhost:5074/api/";
-
 const StateForm = () => {
   const [formMessage, setFormMessage] = React.useState("");
   const [countries, setCountries] = React.useState([]);
 
   React.useEffect(() => {
-    axios.get(baseURL + "country").then((res) => setCountries(res.data));
+    axios
+      .get(AppSettings.BackendHostURL + "api/country")
+      .then((res) => setCountries(res.data));
   }, []);
 
   const formik = useFormik({
@@ -38,11 +39,13 @@ const StateForm = () => {
     },
     validationSchema: validationSchema,
     onSubmit: (values) => {
-      axios.post(baseURL + "State", values).then((response) => {
-        if (response.data.error) alert(response.data.error);
-        if (response.data.message) alert(response.data.message);
-        setFormMessage(response.data);
-      });
+      axios
+        .post(AppSettings.BackendHostURL + "api/State", values)
+        .then((response) => {
+          if (response.data.error) alert(response.data.error);
+          if (response.data.message) alert(response.data.message);
+          setFormMessage(response.data);
+        });
     },
   });
 

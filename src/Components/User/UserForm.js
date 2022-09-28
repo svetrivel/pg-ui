@@ -12,6 +12,7 @@ import { useNavigate } from "react-router-dom";
 import PendingIcon from "@mui/icons-material/AccessTimeFilled";
 import Divider from "@mui/material/Divider";
 import Chip from "@mui/material/Chip";
+import AppSettings from "../../AppSettings";
 
 const validationSchema = yup.object({
   email: yup
@@ -48,7 +49,7 @@ const UserForm = () => {
     validationSchema: validationSchema,
     onSubmit: (values) => {
       axios
-        .post("http://localhost:5074/api/user/register", values)
+        .post(AppSettings.BackendHostURL + "/api/user/register", values)
         .then((res) => alert(res.data));
       navigate("/users");
     },
@@ -59,11 +60,15 @@ const UserForm = () => {
       sx={{
         "& .MuiTextField-root": { m: 1 },
         paddingTop: "20px",
+        backgroundColor: "#fff",
+        margin: "10px",
+        borderRadius: "3px",
+        padding: "5px",
       }}
     >
       <form onSubmit={formik.handleSubmit} style={{ textAlign: "center" }}>
         <div style={{ display: "grid", gridTemplateColumns: "50% 50%" }}>
-          <fieldset style={{ border: "none" }}>
+          <fieldset style={{ border: "none", maxWidth: "350px" }}>
             <TextField
               fullWidth
               id="firstName"
@@ -88,7 +93,7 @@ const UserForm = () => {
               helperText={formik.touched.lastName && formik.errors.lastName}
             />
           </fieldset>
-          <fieldset style={{ border: "none" }}>
+          <fieldset style={{ border: "none", maxWidth: "350px" }}>
             <TextField
               fullWidth
               id="email"
@@ -137,7 +142,7 @@ const UserForm = () => {
         <Divider textAlign="left">
           <Chip label="Professional Details" />
         </Divider>
-        <fieldset style={{ border: "none" }}>
+        <fieldset style={{ border: "none", maxWidth: "350px" }}>
           <TextField
             fullWidth
             id="company"
