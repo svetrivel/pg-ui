@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import ReactDOM from "react-dom";
 import { useFormik } from "formik";
 import * as yup from "yup";
@@ -13,6 +13,8 @@ import PendingIcon from "@mui/icons-material/AccessTimeFilled";
 import Divider from "@mui/material/Divider";
 import Chip from "@mui/material/Chip";
 import AppSettings from "../../AppSettings";
+import { Alert, Snackbar } from "@mui/material";
+import { ResponseType } from "../../Common/Constants";
 
 const validationSchema = yup.object({
   email: yup
@@ -36,6 +38,14 @@ const validationSchema = yup.object({
 
 const UserForm = () => {
   const navigate = useNavigate();
+  const [userResponse, setUserResponse] = useState({type:'', message: '', open : false});
+
+  const closeToastMessage = (event, reason) => {
+    if (reason === 'clickaway') {
+      return;
+    }
+    setUserResponse({...userResponse, open : false });
+  };
 
   const formik = useFormik({
     initialValues: {
@@ -49,9 +59,10 @@ const UserForm = () => {
     validationSchema: validationSchema,
     onSubmit: (values) => {
       axios
-        .post(AppSettings.BackendHostURL + "/api/user/register", values)
-        .then((res) => alert(res.data));
-      navigate("/users");
+        .post(AppSettings.BackendHostURL + "api/user/register", values)
+        .then(res => {setUserResponse({type:ResponseType.Success.toLowerCase(), message: res.data.Message, open: true}); console.log(res)})
+        .catch(error => setUserResponse({type:ResponseType.Error.toLowerCase(), message: error.response.data.message || 'Something went wrong', open: true}));
+      //navigate("/users");
     },
   });
 
@@ -66,6 +77,15 @@ const UserForm = () => {
         padding: "5px",
       }}
     >
+      { userResponse.message.length > 0 &&
+      <Snackbar open={userResponse.open} autoHideDuration={6000} onClose={closeToastMessage} anchorOrigin={{ vertical : 'top', horizontal:'center' }}>
+        <Alert severity={userResponse.type} variant="filled" onClose={closeToastMessage}>
+           <Typography variant="body1" gutterBottom>
+            {userResponse.message}
+          </Typography>
+        </Alert>
+      </Snackbar>      
+      }
       <form onSubmit={formik.handleSubmit} style={{ textAlign: "center" }}>
         <div style={{ display: "grid", gridTemplateColumns: "50% 50%" }}>
           <fieldset style={{ border: "none", maxWidth: "350px" }}>

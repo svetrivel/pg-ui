@@ -46,8 +46,9 @@ const UserBrowse = () => {
           <CardContent>
             <Grid alignItems={"flex-start"}>
               <Icon>{"account_circle"}</Icon>
-              <Typography>{x.userName}</Typography>
+              <Typography>{x.firstName+' '+ (x.lastName||'')}</Typography>
               <Typography>{x.email}</Typography>
+              <Typography>{x.userName}</Typography>
             </Grid>
           </CardContent>
         </Card>

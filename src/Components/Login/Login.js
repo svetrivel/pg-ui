@@ -7,15 +7,17 @@ import IconButton from "@mui/material/IconButton";
 import Fingerprint from "@mui/icons-material/Fingerprint";
 import Box from "@mui/material/Box";
 import axios from "axios";
-import { Typography } from "@mui/material";
+import { Alert, Snackbar, Typography } from "@mui/material";
 import AppSettings from "../../AppSettings";
 import { Instagram } from "@mui/icons-material";
 import { Stack } from "@mui/system";
+import { ResponseType } from "../../Common/Constants";
+import { useNavigate } from "react-router-dom";
 
 const validationSchema = yup.object({
   email: yup
     .string("Enter your email")
-    //.email("Enter a valid email")
+    .email("Enter a valid email")
     .required("Email is required"),
   password: yup
     .string("Enter your password")
@@ -24,7 +26,16 @@ const validationSchema = yup.object({
 });
 
 const Login = (prop) => {
-  const [loginMessage, setLoginMessage] = useState({ type: "", message: "" });
+  const [loginMessage, setLoginMessage] = useState({ type: "", message: "", open: false });
+
+  const closeToastMessage = (event, reason) => {
+    if (reason === 'clickaway') {
+      return;
+    }
+    setLoginMessage({...loginMessage, open : false });
+  };
+
+  const navigate = useNavigate();
 
   const loginUser = (loginData) => {
     axios
@@ -32,10 +43,18 @@ const Login = (prop) => {
         email: loginData.email,
         password: loginData.password,
       })
-      .then((res) => setLoginMessage({ type: "Success", message: res.data }))
+      .then((res) => {
+        setLoginMessage({ type: ResponseType.Success.toLowerCase(), message: res.data.message, open: true });        
+
+        setTimeout(() => {
+          if(prop.onSuccessfulLogin)
+            prop.onSuccessfulLogin();
+          navigate('/');
+        }, 1500);        
+    })
       .catch((error) => {
         //console.log(error);
-        setLoginMessage({ type: "Error", message: error.response.data.error });
+        setLoginMessage({ type: ResponseType.Error.toLowerCase(), message: error.response.data.message, open: false});
       });
   };
   const formik = useFormik({
@@ -57,9 +76,34 @@ const Login = (prop) => {
         backgroundColor: "#fff",
         padding: "10px 40px",
         borderRadius: "10px",
+        boxShadow:"0 2px 4px rgb(0 0 0 / 10%), 0 8px 16px rgb(0 0 0 / 10%);"
       }}
       autoComplete="off"
     >
+    { loginMessage.open && 
+    <Snackbar open={loginMessage.open} autoHideDuration={6000} onClose={closeToastMessage} anchorOrigin={{ vertical : 'top', horizontal:'center' }}>
+        <Alert severity={loginMessage.type} variant="filled" onClose={closeToastMessage}>
+           <Typography variant="body1" gutterBottom>
+            {loginMessage.message}
+          </Typography>
+        </Alert>
+    </Snackbar>    
+    }
+    <Stack
+      direction="row"
+      alignItems="center"
+      justifyContent="center"
+      spacing={1}
+      style={{ margin: "12px 0 12px 0" }}
+    >
+      <Instagram color="primary" style={{ fontSize: "50px" }} />
+      <Typography>Instagram</Typography>
+    </Stack>
+      {loginMessage.message.length > 0 && loginMessage.type === ResponseType.Error.toLowerCase() && (
+        <Alert sx={{width:"322px",marginBottom:"15px"}} severity={loginMessage.type}>
+          {loginMessage.message}
+        </Alert>
+      )}
       <form
         onSubmit={formik.handleSubmit}
         style={{
@@ -68,17 +112,7 @@ const Login = (prop) => {
           flexDirection: "column",
           alignItems: "center",
         }}
-      >
-        <Stack
-          direction="row"
-          alignItems="center"
-          justifyContent="center"
-          spacing={1}
-          style={{ margin: "12px 0 12px 0" }}
-        >
-          <Instagram color="primary" style={{ fontSize: "50px" }} />
-          <Typography>Instagram</Typography>
-        </Stack>
+      >        
         <TextField
           fullWidth
           id="email"
@@ -104,17 +138,12 @@ const Login = (prop) => {
           color="success"
           variant="contained"
           type="submit"
-          style={{ marginTop: "10px" }}
+          style={{ margin: "6px 0" }}
         >
           <Fingerprint />
           Login
         </Button>
-      </form>
-      {loginMessage.message.length > 0 && (
-        <Typography color={loginMessage.type === "Error" ? "red" : "green"}>
-          {loginMessage.message}
-        </Typography>
-      )}
+      </form>      
     </Box>
   );
 };

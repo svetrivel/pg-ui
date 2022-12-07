@@ -1,11 +1,6 @@
 import * as React from "react";
 import Button from "@mui/material/Button";
-import TextField from "@mui/material/TextField";
 import Dialog from "@mui/material/Dialog";
-import DialogActions from "@mui/material/DialogActions";
-import DialogContent from "@mui/material/DialogContent";
-import DialogContentText from "@mui/material/DialogContentText";
-import DialogTitle from "@mui/material/DialogTitle";
 import Login from "./Login";
 import { styled } from "@mui/material/styles";
 import { green } from "@mui/material/colors";
@@ -19,10 +14,6 @@ export default function PopupLogin(prop) {
 
   const handleClose = () => {
     setOpen(false);
-  };
-
-  const submitHandler = (loginDetail) => {
-    prop.onLogin(loginDetail);
   };
 
   const LoginButton = styled(Button)(({ theme }) => ({
@@ -42,9 +33,7 @@ export default function PopupLogin(prop) {
       </LoginButton>
 
       <Dialog open={open} onClose={handleClose}>
-        <DialogContent>
-          <Login onSubmit={submitHandler} />
-        </DialogContent>
+        <Login onSuccessfulLogin= {handleClose}/>
       </Dialog>
     </React.Fragment>
   );
