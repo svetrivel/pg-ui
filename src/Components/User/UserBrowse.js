@@ -12,6 +12,7 @@ import CardContent from "@mui/material/CardContent";
 import Grid from "@mui/material/Grid";
 import { Icon } from "@mui/material";
 import People from "@mui/icons-material/People";
+import AppSettings from "../../AppSettings";
 
 const columns = [
   { field: "id", headerName: "ID", width: 70 },
@@ -25,7 +26,7 @@ const UserBrowse = () => {
   ]);
 
   React.useEffect(() => {
-    axios.get("http://localhost:5074/api/user/users").then((res) => {
+    axios.get(AppSettings.BackendHostURL + "api/user/users").then((res) => {
       setUsers(res.data);
     });
   }, []);
@@ -45,8 +46,9 @@ const UserBrowse = () => {
           <CardContent>
             <Grid alignItems={"flex-start"}>
               <Icon>{"account_circle"}</Icon>
-              <Typography>{x.userName}</Typography>
+              <Typography>{x.firstName+' '+ (x.lastName||'')}</Typography>
               <Typography>{x.email}</Typography>
+              <Typography>{x.userName}</Typography>
             </Grid>
           </CardContent>
         </Card>

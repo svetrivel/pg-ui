@@ -167,10 +167,6 @@ export default function AppMainBar() {
     </Menu>
   );
 
-  const loginHandler = (loginDetail) => {
-    setisLoggedIn(true);
-  };
-
   const navigate = useNavigate();
 
   let leftSideActions;
@@ -202,14 +198,14 @@ export default function AppMainBar() {
   } else {
     leftSideActions = (
       <React.Fragment>
-        <PopupLogin onLogin={loginHandler} />
         <Button
-          onClick={() => navigate("/Register")}
+          onClick={() => navigate("/Register")}          
+          variant="outlined"
           color="success"
-          variant="contained"
         >
           Sign up
         </Button>
+        <PopupLogin />
       </React.Fragment>
     );
   }

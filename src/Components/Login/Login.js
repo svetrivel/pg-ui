@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { useFormik } from "formik";
 import * as yup from "yup";
 import Button from "@mui/material/Button";
@@ -6,14 +6,18 @@ import TextField from "@mui/material/TextField";
 import IconButton from "@mui/material/IconButton";
 import Fingerprint from "@mui/icons-material/Fingerprint";
 import Box from "@mui/material/Box";
-import { height } from "@mui/system";
 import axios from "axios";
-import { Typography } from "@mui/material";
+import { Alert, Snackbar, Typography } from "@mui/material";
+import AppSettings from "../../AppSettings";
+import { Instagram } from "@mui/icons-material";
+import { Stack } from "@mui/system";
+import { ResponseType } from "../../Common/Constants";
+import { useNavigate } from "react-router-dom";
 
 const validationSchema = yup.object({
   email: yup
     .string("Enter your email")
-    //.email("Enter a valid email")
+    .email("Enter a valid email")
     .required("Email is required"),
   password: yup
     .string("Enter your password")
@@ -21,16 +25,37 @@ const validationSchema = yup.object({
     .required("Password is required"),
 });
 
-const baseURL = "http://localhost:5074/api/User/Login";
-
 const Login = (prop) => {
+  const [loginMessage, setLoginMessage] = useState({ type: "", message: "", open: false });
+
+  const closeToastMessage = (event, reason) => {
+    if (reason === 'clickaway') {
+      return;
+    }
+    setLoginMessage({...loginMessage, open : false });
+  };
+
+  const navigate = useNavigate();
+
   const loginUser = (loginData) => {
     axios
-      .post(baseURL, {
-        userName: loginData.email,
+      .post(AppSettings.BackendHostURL + "api/User/Login", {
+        email: loginData.email,
         password: loginData.password,
       })
-      .then((res) => console.log(res.data));
+      .then((res) => {
+        setLoginMessage({ type: ResponseType.Success.toLowerCase(), message: res.data.message, open: true });        
+
+        setTimeout(() => {
+          if(prop.onSuccessfulLogin)
+            prop.onSuccessfulLogin();
+          navigate('/');
+        }, 1500);        
+    })
+      .catch((error) => {
+        //console.log(error);
+        setLoginMessage({ type: ResponseType.Error.toLowerCase(), message: error.response.data.message, open: false});
+      });
   };
   const formik = useFormik({
     initialValues: {
@@ -40,8 +65,6 @@ const Login = (prop) => {
     validationSchema: validationSchema,
     onSubmit: (values) => {
       loginUser(values);
-      if (prop.onSubmit) alert("No external submit ofund");
-      else prop.onSubmit(values);
     },
   });
 
@@ -49,20 +72,47 @@ const Login = (prop) => {
     <Box
       sx={{
         "& .MuiTextField-root": { m: 1 },
-        display: "flex",
-        flexWrap: "wrap",
-        justifyContent: "space-around",
-        paddingTop: "40px",
+        width: "350px",
+        backgroundColor: "#fff",
+        padding: "10px 40px",
+        borderRadius: "10px",
+        boxShadow:"0 2px 4px rgb(0 0 0 / 10%), 0 8px 16px rgb(0 0 0 / 10%);"
       }}
       autoComplete="off"
     >
+    { loginMessage.open && 
+    <Snackbar open={loginMessage.open} autoHideDuration={6000} onClose={closeToastMessage} anchorOrigin={{ vertical : 'top', horizontal:'center' }}>
+        <Alert severity={loginMessage.type} variant="filled" onClose={closeToastMessage}>
+           <Typography variant="body1" gutterBottom>
+            {loginMessage.message}
+          </Typography>
+        </Alert>
+    </Snackbar>    
+    }
+    <Stack
+      direction="row"
+      alignItems="center"
+      justifyContent="center"
+      spacing={1}
+      style={{ margin: "12px 0 12px 0" }}
+    >
+      <Instagram color="primary" style={{ fontSize: "50px" }} />
+      <Typography>Instagram</Typography>
+    </Stack>
+      {loginMessage.message.length > 0 && loginMessage.type === ResponseType.Error.toLowerCase() && (
+        <Alert sx={{width:"322px",marginBottom:"15px"}} severity={loginMessage.type}>
+          {loginMessage.message}
+        </Alert>
+      )}
       <form
         onSubmit={formik.handleSubmit}
         style={{
-          width: "500px",
           textAlign: "center",
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
         }}
-      >
+      >        
         <TextField
           fullWidth
           id="email"
@@ -73,7 +123,6 @@ const Login = (prop) => {
           error={formik.touched.email && Boolean(formik.errors.email)}
           helperText={formik.touched.email && formik.errors.email}
         />
-        <Typography align="center">OR</Typography>
         <TextField
           fullWidth
           id="password"
@@ -85,11 +134,16 @@ const Login = (prop) => {
           error={formik.touched.password && Boolean(formik.errors.password)}
           helperText={formik.touched.password && formik.errors.password}
         />
-        <Button color="success" variant="contained" type="submit">
+        <Button
+          color="success"
+          variant="contained"
+          type="submit"
+          style={{ margin: "6px 0" }}
+        >
           <Fingerprint />
           Login
         </Button>
-      </form>
+      </form>      
     </Box>
   );
 };

@@ -5,6 +5,7 @@ import { Routes, Route } from "react-router-dom";
 import { Fragment } from "react";
 import UserForm from "./Components/User/UserForm";
 import UserBrowse from "./Components/User/UserBrowse";
+import LoginPage from "./Pages/LoginPage";
 
 function App() {
   return (
@@ -12,7 +13,7 @@ function App() {
       <AppMainBar />
       <Routes>
         <Route path="/*" element={<Dashboard />} />
-        <Route path="/Login" element={<Login />} />
+        <Route path="/Login" element={<LoginPage />} />
         <Route path="/Register" element={<UserForm />} />
         <Route path="/Users" element={<UserBrowse />} />
       </Routes>

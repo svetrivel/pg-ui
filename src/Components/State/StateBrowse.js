@@ -1,6 +1,7 @@
 import * as React from "react";
 import { DataGrid } from "@mui/x-data-grid";
 import axios from "axios";
+import AppSettings from "../../AppSettings";
 
 const columns = [
   { field: "id", headerName: "ID", width: 70 },
@@ -8,13 +9,11 @@ const columns = [
   { field: "shortName", headerName: "Short Name", width: 130 },
 ];
 
-const baseURL = "http://localhost:5074/api/State";
-
 export default function StateBrowse() {
   const [states, setStates] = React.useState([]);
 
   React.useEffect(() => {
-    axios.get(baseURL).then((res) => {
+    axios.get(AppSettings.BackendHostURL + "api/state").then((res) => {
       setStates(res.data);
     });
   }, []);
