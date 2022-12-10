@@ -1,12 +1,13 @@
-import React from "react";
+import { Alert } from "@mui/material";
 import Box from "@mui/material/Box";
-import { useFormik } from "formik";
-import * as yup from "yup";
 import Button from "@mui/material/Button";
-import Paper from "@mui/material/Paper";
 import TextField from "@mui/material/TextField";
 import axios from "axios";
-import { Dialog, DialogContent, DialogTitle } from "@mui/material";
+import { useFormik } from "formik";
+import React from "react";
+import * as yup from "yup";
+import AppSettings from "../../AppSettings";
+import { ResponseType } from "../../Common/Constants";
 
 const validationSchema = yup.object({
   name: yup.string("Enter country name").required("Name is required"),
@@ -16,10 +17,13 @@ const validationSchema = yup.object({
     .required("Short Name is required"),
 });
 
-const baseURL = "http://localhost:5074/api/Country";
+const baseURL = AppSettings.BackendHostURL + "api/Country";
 
-const CountryForm = () => {
-  const [formMessage, setFormMessage] = React.useState("");
+const CountryForm = (prop) => {
+  const [formMessage, setFormMessage] = React.useState({
+    type: "",
+    message: "",
+  });
 
   const formik = useFormik({
     initialValues: {
@@ -28,56 +32,75 @@ const CountryForm = () => {
     },
     validationSchema: validationSchema,
     onSubmit: (values) => {
-      axios.post(baseURL, values).then((response) => {
-        if (response.data.error) alert(response.data.error);
-        if (response.data.message) alert(response.data.message);
-        setFormMessage(response.data);
-      });
+      axios
+        .post(baseURL, values)
+        .then((response) => {
+          setFormMessage({
+            type: ResponseType.Success.toLowerCase(),
+            message: response.data.Message,
+          });
+
+          if (prop.onCreate) prop.onCreate();
+        })
+        .catch((error) => {
+          setFormMessage({
+            type: ResponseType.Error.toLowerCase(),
+            message: error.response.data.message,
+          });
+        });
     },
   });
 
   return (
-    <Box
-      sx={{
-        display: "flex",
-        flexWrap: "wrap",
-        "& > :not(style)": {
-          m: 1,
-        },
-      }}
-    >
-      <form onSubmit={formik.handleSubmit}>
-        <TextField
-          fullWidth
-          id="name"
-          name="name"
-          label="Name"
-          value={formik.values.name}
-          onChange={formik.handleChange}
-          error={formik.touched.name && Boolean(formik.errors.name)}
-          helperText={formik.touched.name && formik.errors.name}
-        />
-        <TextField
-          fullWidth
-          id="shortName"
-          name="shortName"
-          label="Short Name"
-          value={formik.values.shortName}
-          onChange={formik.handleChange}
-          error={formik.touched.shortName && Boolean(formik.errors.shortName)}
-          helperText={formik.touched.shortName && formik.errors.shortName}
-        />
-        <Button color="primary" variant="contained" fullWidth type="submit">
-          Submit
-        </Button>
-      </form>
-      {/* <Dialog open={formMessage.message}>
-        <DialogTitle>Response</DialogTitle>
-        <DialogContent>
-          <Paper>{formMessage}</Paper>
-        </DialogContent>
-      </Dialog> */}
-    </Box>
+    <React.Fragment>
+      {formMessage.message.length > 0 && (
+        <Alert sx={{ marginBottom: "15px" }} severity={formMessage.type} variant="outlined">
+          {formMessage.message}
+        </Alert>
+      )}
+      <Box
+        sx={{
+          display: "flex",
+          flexWrap: "wrap",
+          "& > :not(style)": {
+            m: 1,
+          },
+          backgroundColor: "white",
+        }}
+      >
+        <form
+          onSubmit={formik.handleSubmit}
+          autoComplete="off"
+          style={{ display: "contents" }}
+        >
+          <TextField
+            fullWidth
+            id="name"
+            name="name"
+            label="Name"
+            value={formik.values.name}
+            onChange={formik.handleChange}
+            error={formik.touched.name && Boolean(formik.errors.name)}
+            helperText={formik.touched.name && formik.errors.name}
+            sx={{ margin: "8px" }}
+          />
+          <TextField
+            fullWidth
+            id="shortName"
+            name="shortName"
+            label="Short Name"
+            value={formik.values.shortName}
+            onChange={formik.handleChange}
+            error={formik.touched.shortName && Boolean(formik.errors.shortName)}
+            helperText={formik.touched.shortName && formik.errors.shortName}
+            sx={{ margin: "8px" }}
+          />
+          <Button color="primary" variant="contained" fullWidth type="submit">
+            Submit
+          </Button>
+        </form>
+      </Box>
+    </React.Fragment>
   );
 };
 

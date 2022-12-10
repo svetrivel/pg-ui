@@ -1,27 +1,26 @@
-import * as React from "react";
-import { styled, alpha } from "@mui/material/styles";
-import AppBar from "@mui/material/AppBar";
-import Box from "@mui/material/Box";
-import Toolbar from "@mui/material/Toolbar";
-import Button from "@mui/material/Button";
-import IconButton from "@mui/material/IconButton";
-import Typography from "@mui/material/Typography";
-import InputBase from "@mui/material/InputBase";
-import Badge from "@mui/material/Badge";
-import MenuItem from "@mui/material/MenuItem";
-import Menu from "@mui/material/Menu";
-import SearchIcon from "@mui/icons-material/Search";
 import AccountCircle from "@mui/icons-material/AccountCircle";
 import MailIcon from "@mui/icons-material/Mail";
-import NotificationsIcon from "@mui/icons-material/Notifications";
 import MoreIcon from "@mui/icons-material/MoreVert";
+import NotificationsIcon from "@mui/icons-material/Notifications";
+import SearchIcon from "@mui/icons-material/Search";
+import AppBar from "@mui/material/AppBar";
 import Avatar from "@mui/material/Avatar";
+import Badge from "@mui/material/Badge";
+import Box from "@mui/material/Box";
+import Button from "@mui/material/Button";
+import IconButton from "@mui/material/IconButton";
+import InputBase from "@mui/material/InputBase";
+import Menu from "@mui/material/Menu";
+import MenuItem from "@mui/material/MenuItem";
+import { alpha, styled } from "@mui/material/styles";
+import Toolbar from "@mui/material/Toolbar";
 import Tooltip from "@mui/material/Tooltip";
-import SideMenu from "../Dashboard/SideMenu";
-import AppSettings from "../../AppSettings";
-import PopupLogin from "../Login/PopupLogin";
-import UserForm from "../User/UserForm";
+import Typography from "@mui/material/Typography";
+import * as React from "react";
 import { useNavigate } from "react-router-dom";
+import AppSettings from "../../AppSettings";
+import SideMenu from "../Dashboard/SideMenu";
+import PopupLogin from "../Login/PopupLogin";
 
 const Search = styled("div")(({ theme }) => ({
   position: "relative",
@@ -199,9 +198,10 @@ export default function AppMainBar() {
     leftSideActions = (
       <React.Fragment>
         <Button
-          onClick={() => navigate("/Register")}          
+          onClick={() => navigate("/Register")}
           variant="outlined"
           color="success"
+          sx={{ color: "white", borderColor: "white", marginRight:"10px" }}
         >
           Sign up
         </Button>
@@ -210,8 +210,8 @@ export default function AppMainBar() {
     );
   }
   return (
-    <Box sx={{ flexGrow: 1 }}>
-      <AppBar position="static" sx={{ bgcolor: "#576871" }}>
+    <Box sx={{ flexGrow: 1}}>
+      <AppBar position="static" sx={{ bgcolor: "#39424e" }}>
         <Toolbar>
           <SideMenu anchor="left" />
           <Typography

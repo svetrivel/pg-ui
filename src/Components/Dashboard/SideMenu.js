@@ -11,6 +11,7 @@ import ListItemText from "@mui/material/ListItemText";
 import Icon from "@mui/material/Icon";
 import IconButton from "@mui/material/IconButton";
 import { useNavigate } from "react-router-dom";
+import { PageURL } from "../../Common/Constants";
 
 export default function SideMenu(prop) {
   const [state, setState] = React.useState({
@@ -38,32 +39,39 @@ export default function SideMenu(prop) {
       text: "Home",
       icon: "home",
       onClick: () => {
-        navigate("/Home");
+        navigate(PageURL.HomePage);
       },
     },
     {
       text: "Log In",
       icon: "login",
       onClick: () => {
-        navigate("/Login");
+        navigate(PageURL.LoginPage);
       },
     },
     {
       text: "Sign Up",
       icon: "subscriptions",
       onClick: () => {
-        navigate("/register");
+        navigate(PageURL.RegisterPage);
       },
-    },
+    }
   ];
   const subMenuItems = [
     {
       text: "Users",
       icon: "people",
       onClick: () => {
-        navigate("/Users");
+        navigate(PageURL.UserPage);
       },
     },
+    {
+      text: "Country",
+      icon: "public",
+      onClick: () => {
+        navigate(PageURL.CountryPage);
+      },
+    }
   ];
   const list = (anchor) => (
     <Box

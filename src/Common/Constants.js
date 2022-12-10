@@ -3,5 +3,12 @@ const ResponseType = {
     Error: 'ERROR',
     Info : 'Information'   
 }
+const PageURL = {
+    UserPage : '/users',
+    CountryPage : '/country',
+    LoginPage : '/login',
+    HomePage : '/home',
+    RegisterPage : '/register', 
+}
 
-export { ResponseType };
+export { ResponseType, PageURL };
