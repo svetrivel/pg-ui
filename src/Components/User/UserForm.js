@@ -86,7 +86,7 @@ const UserForm = () => {
         </Alert>
       </Snackbar>      
       }
-      <form onSubmit={formik.handleSubmit} style={{ textAlign: "center" }}>
+      <form onSubmit={formik.handleSubmit} autoComplete="off">
         <div style={{ display: "grid", gridTemplateColumns: "50% 50%" }}>
           <fieldset style={{ border: "none", maxWidth: "350px" }}>
             <TextField

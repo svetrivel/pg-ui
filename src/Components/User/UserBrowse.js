@@ -23,6 +23,8 @@ const columns = [
 const UserBrowse = () => {
   const [users, setUsers] = React.useState([
     { id: 122, userName: "13qqweq", email: "awdqweq@adasdas.sda" },
+    { id: 123, userName: "13qqweq", email: "awdqweq@adasdas.sda" },
+    { id: 125, userName: "13qqweq", email: "awdqweq@adasdas.sda" },
   ]);
 
   React.useEffect(() => {
