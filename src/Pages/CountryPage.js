@@ -10,11 +10,9 @@ const CountryPage = (prop) => {
   const [reloadPage, setReloadPage] = useState(false);
 
   const onCountryCreate = () => {
-    console.log(reloadPage);
     setReloadPage((prevState) => {
       return prevState ? false : true;
     });
-    console.log("after", reloadPage);
   };
 
   return (
